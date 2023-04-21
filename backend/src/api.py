@@ -8,6 +8,7 @@ from .database.models import db_drop_and_create_all, setup_db, Drink, db
 from .auth.auth import AuthError, requires_auth
 
 app = Flask(__name__)
+app.app_context().push()
 setup_db(app)
 CORS(app)
 
@@ -111,7 +112,7 @@ def create_new_drink(jwt):
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
-@app.route("/drinks/<int:id>'", methods=["PATCH"])
+@app.route("/drinks/<int:id>", methods=["PATCH"])
 @requires_auth('patch:drinks')
 def modify_drink(jwt, id):
     body = request.get_json()
