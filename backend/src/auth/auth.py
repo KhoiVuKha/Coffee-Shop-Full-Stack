@@ -5,7 +5,6 @@ from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
-
 AUTH0_DOMAIN = 'khoivu.us.auth0.com'
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'coffee-shop'

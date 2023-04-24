@@ -85,6 +85,10 @@ def create_new_drink(jwt):
     drinkTitle = body.get("title", None)
     drinkRecipe = body.get("recipe", None)
 
+    # Imidiately return if new drink input invalid.
+    if (drinkTitle is None) or (drinkRecipe is None):
+        abort(400) # bad request
+
     try:
         new_drink = Drink (title = drinkTitle, 
                            recipe = json.dumps(drinkRecipe))
@@ -94,7 +98,7 @@ def create_new_drink(jwt):
 
         return jsonify({
             "success": True, 
-            "drinks": new_drink.long()
+            "drinks": [new_drink.long()]
         })
 
     except:
@@ -132,12 +136,14 @@ def modify_drink(jwt, id):
             abort(404) # Drink not found
 
         # Update drink info
-        drink.title = new_title
-        drink.recipe = json.dumps(new_recipe)
+        if new_title is not None:
+            drink.title = new_title
+        if new_recipe is not None:
+            drink.recipe = json.dumps(new_recipe)
 
         return jsonify({
             "success": True, 
-            "drinks": drink.long()
+            "drinks": [drink.long()]
         })
 
     except:
@@ -185,6 +191,14 @@ def bad_request(error):
         "message": "bad request"
         }), 400
 
+@app.errorhandler(401)
+def unauthorized(error):
+    return jsonify({
+        "success": False,
+        "error": 401,
+        "message": 'unathorized'
+    }), 401
+
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({
@@ -192,6 +206,14 @@ def not_found(error):
         "error": 404,
         "message": "resource not found"
     }), 404
+
+@app.errorhandler(405)
+def method_not_allowed(error):
+    return jsonify({
+        "success": False,
+        "error": 405,
+        "message": 'method not allowed'
+    }), 405
 
 @app.errorhandler(422)
 def unprocessable(error):
