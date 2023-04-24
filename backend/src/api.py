@@ -68,7 +68,6 @@ def get_drinks_detail(jwt):
     })
 
 '''
-@TODO implement endpoint
     POST /drinks
         it should create a new row in the drinks table
         it should require the 'post:drinks' permission
